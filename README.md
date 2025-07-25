@@ -1,5 +1,7 @@
 # Cloakscreen
 
+> **⚠️ UNDER CONSTRUCTION** - This project is currently in active development and **not ready for production use**. APIs may change, features are incomplete, and documentation is being updated. Please check back soon for the stable release!
+
 **The Open Source DRM-Based AI Vision Blocking Library**
 
 Revolutionary content protection that makes your sensitive text **invisible to AI vision models and screenshots** while keeping it perfectly readable for humans. Uses browser DRM APIs, **hardware acceleration detection**, and **tamper-proof security** with innovative three-layer rendering to create an impenetrable shield against automated content extraction.
