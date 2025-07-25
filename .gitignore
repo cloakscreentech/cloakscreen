@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+*.log
+
+# Build outputs
+dist/
+build/
+lib/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+
+# Coverage reports
+coverage/
+
+# Cache directories
+.cache/
+.eslintcache
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# SSL certificates
+certs/
+
+# Generated documentation
+docs/api/
+
+# DRM and video assets (generated content)
+public/dash_assets/
+public/hls_assets/
+
+# Development tooling
+.rovodev/
+
+# Temporary files
+tmp_*

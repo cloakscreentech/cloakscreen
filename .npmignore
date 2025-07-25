@@ -1,0 +1,37 @@
+# Development and build files
+src/
+*.config.*
+scripts/
+tools/
+server/
+server.ts
+
+# Tests
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+
+# Documentation source and generated docs
+docs/
+
+# Development assets
+public/
+examples/
+!examples/basic-protection.html
+!examples/basic-code-protection.html
+!examples/cdn-usage.html
+!examples/simple-usage.html
+!examples/zero-config.html
+
+# Development tooling
+.husky/
+.changeset/
+.rovodev/
+
+# Environment and config
+.env*
+*.tsbuildinfo
+coverage/
+
+# Temporary files
+tmp_*

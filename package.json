@@ -1,0 +1,185 @@
+{
+  "name": "cloakscreen",
+  "version": "1.0.0",
+  "description": "DRM-based AI vision blocking library that protects sensitive content from screenshots and AI vision models",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/node.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "unpkg": "dist/cloakscreen.min.js",
+  "jsdelivr": "dist/cloakscreen.min.js",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "examples/basic-protection.html",
+    "examples/basic-code-protection.html",
+    "examples/cdn-usage.html",
+    "examples/simple-usage.html",
+    "examples/zero-config.html"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.unified.js",
+    "build:watch": "rollup -c rollup.config.unified.js -w",
+    "build:analyze": "npm run build && node scripts/build-performance.js",
+    "build:optimize": "npm run build && node scripts/optimize-build.js",
+    "build:report": "npm run build:analyze && node scripts/optimize-build.js",
+    "build:size": "npm run build && bundlesize",
+    "build:check": "npm run build:size && npm run test:ci",
+    "deps:audit": "npm audit && node scripts/dependency-audit.js",
+    "deps:optimize": "node scripts/optimize-dependencies.js",
+    "dev": "npm run dev:vite",
+    "dev:server": "tsx server/dev.ts",
+    "dev:vite": "vite",
+    "dev:full": "concurrently \"npm run dev:server\" \"npm run dev:vite\"",
+    "start": "npm run dev",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --config jest.config.coverage.js",
+    "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "prepublishOnly": "npm run build",
+    "generate-video": "node tools/generate-drm-video.js",
+    "generate-drm": "chmod +x scripts/generate-drm-content.sh && ./scripts/generate-drm-content.sh",
+    "generate-drm-dash": "chmod +x scripts/generate-drm-content.sh && ./scripts/generate-drm-content.sh --type dash",
+    "generate-drm-hls": "chmod +x scripts/generate-drm-content.sh && ./scripts/generate-drm-content.sh --type hls",
+    "generate-drm-cmaf": "chmod +x scripts/generate-drm-content.sh && ./scripts/generate-drm-content.sh --type cmaf",
+    "generate-drm-content": "tsx src/drm/cli.ts generate",
+    "drm:generate": "tsx src/drm/cli.ts generate",
+    "drm:providers": "tsx src/drm/cli.ts providers",
+    "drm:check": "tsx src/drm/cli.ts check",
+    "drm:validate": "tsx src/drm/cli.ts validate",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "docs:generate": "typedoc src/index.ts --out docs/api",
+    "docs:serve": "npx serve docs/api"
+  },
+  "keywords": [
+    "drm",
+    "ai-vision-blocking",
+    "screenshot-protection",
+    "content-protection",
+    "security",
+    "privacy",
+    "widevine",
+    "pallycon",
+    "eme",
+    "encrypted-media"
+  ],
+  "author": "Cloakscreen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cloakscreen/cloakscreen.git"
+  },
+  "homepage": "https://cloakscreen.com",
+  "bugs": {
+    "url": "https://github.com/cloakscreen/cloakscreen/issues"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1",
+    "valibot": "^1.1.0"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.5",
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-node-resolve": "^15.3.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@swc/jest": "^0.2.39",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.9.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "bundlesize": "^0.18.2",
+    "commander": "^12.0.0",
+    "concurrently": "^9.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "eslint": "^8.54.0",
+    "express": "^5.1.0",
+    "glob": "^11.0.3",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.4",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "rollup": "^4.44.1",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "tsx": "^4.20.3",
+    "typedoc": "^0.28.7",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.5",
+    "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "peerDependencies": {
+    "shaka-player": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "shaka-player": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "packageManager": "npm@10.0.0",
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "prettier --write"
+    ]
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/index.esm.js",
+      "maxSize": "200kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "./dist/index.js",
+      "maxSize": "200kb",
+      "compression": "gzip"
+    },
+    {
+      "path": "./dist/cloakscreen.min.js",
+      "maxSize": "220kb",
+      "compression": "gzip"
+    }
+  ],
+  "sideEffects": false
+}
