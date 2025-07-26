@@ -182,7 +182,7 @@ export abstract class ContentAdapter extends EventEmitter {
       // Make text transparent but use the background color
       charSpan.style.color = 'transparent';
       charSpan.style.backgroundColor = backgroundColor;
-      charSpan.style.borderRadius = '1px';
+      charSpan.style.borderRadius = '0px';
 
       // Preserve whitespace behavior
       if (char === ' ') {
