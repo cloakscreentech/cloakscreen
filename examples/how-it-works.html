@@ -8,6 +8,7 @@
     <!-- Required dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.11.17/dist/shaka-player.compiled.min.js"></script>
     <script src="/cloakscreen.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 
     <style>
       body {
@@ -85,6 +86,8 @@
         background: white;
         border-radius: 6px;
         border-left: 4px solid #007bff;
+        opacity: 0;
+        transform: translateY(20px);
       }
 
       .step h3 {
@@ -122,6 +125,43 @@
         padding: 2px 4px;
         margin: 0;
         display: inline-block;
+        transform: scale(0);
+      }
+
+      .demo-layer .background-layer,
+      .demo-layer .middle-layer,
+      .demo-layer .text-layer {
+        margin: 0;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .whole-layer {
+        padding: 8px 16px;
+        border-radius: 0;
+        font-family: monospace;
+        font-weight: bold;
+        display: inline-block;
+        transform: scale(0);
+      }
+
+      .background-whole {
+        background: #333;
+        color: #333;
+      }
+
+      .middle-whole {
+        background: white;
+        color: white;
+      }
+
+      .text-whole {
+        background: transparent;
+        color: #333;
       }
 
       .middle-layer {
@@ -130,6 +170,7 @@
         padding: 2px 4px;
         margin: 0;
         display: inline-block;
+        transform: scale(0);
       }
 
       .text-layer {
@@ -137,6 +178,7 @@
         padding: 2px 4px;
         margin: 0;
         display: inline-block;
+        transform: scale(0);
       }
 
       .combined-view .background-layer,
@@ -211,6 +253,59 @@
         font-weight: bold;
         padding: 2px 4px;
         border-radius: 2px;
+        transform: scale(0);
+      }
+
+      .layer-stack-demo {
+        background: #f0f8ff;
+        border: 2px solid #007bff;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .stacked-layers {
+        position: relative;
+        display: inline-block;
+        margin: 20px 0;
+        height: 40px;
+        width: 200px;
+        overflow: hidden;
+      }
+
+      .demo-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 0;
+      }
+
+      .background-demo {
+        z-index: 1;
+      }
+
+      .middle-demo {
+        z-index: 2;
+      }
+
+      .text-demo {
+        z-index: 3;
+      }
+
+      .demo-status {
+        font-weight: bold;
+        color: #007bff;
+        margin-top: 10px;
+        font-size: 14px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
       }
     </style>
   </head>
@@ -234,15 +329,15 @@
           <div class="layer-demo">
             <strong>Background Layer (Hidden Clone):</strong><br>
             <div class="layer-container">
-              <span class="background-layer">S</span><span class="background-layer">e</span><span class="background-layer">c</span><span class="background-layer">r</span><span class="background-layer">e</span><span class="background-layer">t</span>
+              <div class="whole-layer background-whole">Secret</div>
             </div>
-            <br><small>↑ Exact text clone with background-colored rectangles</small>
+            <br><small>↑ Dark background covering the text</small>
           </div>
 
           <div class="layer-demo">
             <strong>Middle Layer (White Sheet):</strong><br>
             <div class="layer-container">
-              <span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span>
+              <div class="whole-layer middle-whole">██████</div>
             </div>
             <br><small>↑ White overlay that covers the background</small>
           </div>
@@ -250,7 +345,7 @@
           <div class="layer-demo">
             <strong>Foreground Layer (Visible Text):</strong><br>
             <div class="layer-container">
-              <span class="text-layer">S</span><span class="text-layer">e</span><span class="text-layer">c</span><span class="text-layer">r</span><span class="text-layer">e</span><span class="text-layer">t</span>
+              <div class="whole-layer text-whole">Secret</div>
             </div>
             <br><small>↑ The actual text you see</small>
           </div>
@@ -265,7 +360,7 @@
           <div class="layer-demo">
             <strong>Combined View (What You See):</strong><br>
             <div class="layer-container" style="background: white;">
-              <span class="text-layer">S</span><span class="text-layer">e</span><span class="text-layer">c</span><span class="text-layer">r</span><span class="text-layer">e</span><span class="text-layer">t</span>
+              <div class="whole-layer text-whole">Secret</div>
             </div>
             <br><small>↑ Normal viewing: only text is visible</small>
           </div>
@@ -277,10 +372,26 @@
             When a screenshot is taken, DRM removes the middle white layer, revealing the hidden background rectangles that obscure the text.
           </div>
           
+          <div class="layer-stack-demo" id="layer-stack-demo">
+            <strong>🎬 Watch the Protection in Action:</strong><br>
+            <div class="stacked-layers">
+              <div class="demo-layer background-demo">
+                <div class="whole-layer background-whole">Secret</div>
+              </div>
+              <div class="demo-layer middle-demo" id="middle-layer-demo">
+                <div class="whole-layer middle-whole">██████</div>
+              </div>
+              <div class="demo-layer text-demo">
+                <div class="whole-layer text-whole">Secret</div>
+              </div>
+            </div>
+            <div class="demo-status" id="demo-status">Normal View: Text is readable</div>
+          </div>
+          
           <div class="screenshot-simulation">
             <strong>📸 Screenshot Result:</strong><br>
             <div class="layer-container">
-              <span class="background-layer">S</span><span class="background-layer">e</span><span class="background-layer">c</span><span class="background-layer">r</span><span class="background-layer">e</span><span class="background-layer">t</span>
+              <div class="whole-layer background-whole">Secret</div>
             </div>
             <br><small>↑ Only dark rectangles visible - text is protected!</small>
           </div>
@@ -342,8 +453,117 @@
     </div>
 
     <script>
+      // Initialize animations
+      function initAnimations() {
+        // Animate steps sequentially
+        anime({
+          targets: '.step',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 600,
+          delay: anime.stagger(250),
+          easing: 'easeOutExpo'
+        });
+
+        // Animate whole layers in sequence
+        setTimeout(() => {
+          anime({
+            targets: '.background-whole',
+            scale: [0, 1],
+            duration: 400,
+            easing: 'easeOutBack'
+          });
+        }, 500);
+
+        setTimeout(() => {
+          anime({
+            targets: '.middle-whole',
+            scale: [0, 1],
+            duration: 400,
+            easing: 'easeOutBack'
+          });
+        }, 900);
+
+        setTimeout(() => {
+          anime({
+            targets: '.text-whole',
+            scale: [0, 1],
+            duration: 400,
+            easing: 'easeOutBack'
+          });
+        }, 1300);
+
+        // Animate colorful text spans
+        setTimeout(() => {
+          anime({
+            targets: '.colorful-text span',
+            scale: [0, 1],
+            duration: 250,
+            delay: anime.stagger(80),
+            easing: 'easeOutBack'
+          });
+        }, 2000);
+
+        // Animate the layer stack demo
+        setTimeout(() => {
+          animateLayerStackDemo();
+        }, 2800);
+      }
+
+      function animateLayerStackDemo() {
+        const middleLayer = document.getElementById('middle-layer-demo');
+        const demoStatus = document.getElementById('demo-status');
+        
+        // Layers are already visible, start the rug pull immediately
+        setTimeout(() => {
+          rugPullLoop();
+        }, 1000);
+
+      }
+
+      function rugPullLoop() {
+        const middleLayer = document.getElementById('middle-layer-demo');
+        const demoStatus = document.getElementById('demo-status');
+        
+        // Pull away the middle layer
+        demoStatus.textContent = '📸 Screenshot taken - Middle layer removed!';
+        demoStatus.style.color = '#ff6b6b';
+        
+        anime({
+          targets: middleLayer,
+          translateX: [0, 300],
+          opacity: [1, 0],
+          duration: 800,
+          easing: 'easeInExpo',
+          complete: () => {
+            // Reset and loop again
+            setTimeout(() => {
+              demoStatus.textContent = 'Normal View: Text is readable';
+              demoStatus.style.color = '#007bff';
+              
+              anime({
+                targets: middleLayer,
+                translateX: [300, 0],
+                opacity: [0, 1],
+                duration: 600,
+                easing: 'easeOutExpo',
+                complete: () => {
+                  // Continue the endless loop
+                  setTimeout(() => {
+                    rugPullLoop();
+                  }, 2000);
+                }
+              });
+            }, 1500);
+          }
+        });
+      }
+
       // Initialize Cloakscreen on page load
       document.addEventListener('DOMContentLoaded', async () => {
+        // Start animations
+        initAnimations();
+        
         const statusElement = document.getElementById('protection-status');
         
         if (window.Cloakscreen && window.Cloakscreen.protect) {
