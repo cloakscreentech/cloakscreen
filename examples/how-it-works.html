@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloakscreen Protection Demo - Step by Step</title>
+
+    <!-- Required dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.11.17/dist/shaka-player.compiled.min.js"></script>
+    <script src="/cloakscreen.min.js"></script>
+
+    <style>
+      body {
+        background: white;
+        color: black;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        display: flex;
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          gap: 20px;
+        }
+        
+        .explanation-panel,
+        .demo-panel {
+          flex: none;
+        }
+        
+        .title h1 {
+          font-size: 24px;
+        }
+        
+        .title p {
+          font-size: 14px;
+        }
+        
+        .step {
+          padding: 12px;
+        }
+        
+        .layer-demo {
+          padding: 8px;
+          font-size: 12px;
+        }
+        
+        .layer-container {
+          padding: 1px;
+        }
+        
+        .combined-view {
+          width: 100px;
+          height: 20px;
+        }
+      }
+
+      .explanation-panel {
+        flex: 1;
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+      }
+
+      .demo-panel {
+        flex: 1;
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+      }
+
+      .step {
+        margin-bottom: 30px;
+        padding: 15px;
+        background: white;
+        border-radius: 6px;
+        border-left: 4px solid #007bff;
+      }
+
+      .step h3 {
+        margin: 0 0 10px 0;
+        color: #007bff;
+        font-size: 16px;
+      }
+
+      .step-description {
+        margin-bottom: 15px;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .layer-demo {
+        font-family: monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+
+      .layer-container {
+        border: 1px solid #ddd;
+        display: inline-block;
+        padding: 2px;
+      }
+
+      .background-layer {
+        background: #333;
+        color: #333;
+        padding: 2px 4px;
+        margin: 0;
+        display: inline-block;
+      }
+
+      .middle-layer {
+        background: white;
+        color: white;
+        padding: 2px 4px;
+        margin: 0;
+        display: inline-block;
+      }
+
+      .text-layer {
+        color: #333;
+        padding: 2px 4px;
+        margin: 0;
+        display: inline-block;
+      }
+
+      .combined-view .background-layer,
+      .combined-view .middle-layer,
+      .combined-view .text-layer {
+        border-radius: 0;
+        border: none;
+        margin: 0;
+      }
+
+      .red { color: red; }
+      .blue { color: blue; }
+      .green { color: green; }
+
+      .combined-view {
+        position: relative;
+        display: inline-block;
+        height: 24px;
+        width: 120px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        padding: 2px;
+      }
+
+      .layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+      }
+
+      .screenshot-simulation {
+        background: #ffe6e6;
+        border: 2px dashed #ff6b6b;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+
+      .title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+      }
+
+      .demo-content {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 20px;
+      }
+
+      .protection-status {
+        background: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        border: 1px solid #c3e6cb;
+        font-weight: bold;
+      }
+
+      .sensitive-data {
+        background: transparent;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+      }
+
+      .colorful-text span {
+        font-weight: bold;
+        padding: 2px 4px;
+        border-radius: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="title">
+      <h1>🛡️ Cloakscreen Protection Mechanism</h1>
+      <p>Understanding how three-layer DRM protection works against screenshots and AI vision</p>
+    </div>
+
+    <div class="container">
+      <!-- Left Panel: Step-by-Step Explanation -->
+      <div class="explanation-panel">
+        <h2>📋 How Protection Works</h2>
+        
+        <div class="step">
+          <h3>Step 1: Create Three Layers</h3>
+          <div class="step-description">
+            Cloakscreen creates three distinct layers for protection:
+          </div>
+          
+          <div class="layer-demo">
+            <strong>Background Layer (Hidden Clone):</strong><br>
+            <div class="layer-container">
+              <span class="background-layer">S</span><span class="background-layer">e</span><span class="background-layer">c</span><span class="background-layer">r</span><span class="background-layer">e</span><span class="background-layer">t</span>
+            </div>
+            <br><small>↑ Exact text clone with background-colored rectangles</small>
+          </div>
+
+          <div class="layer-demo">
+            <strong>Middle Layer (White Sheet):</strong><br>
+            <div class="layer-container">
+              <span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span><span class="middle-layer">█</span>
+            </div>
+            <br><small>↑ White overlay that covers the background</small>
+          </div>
+
+          <div class="layer-demo">
+            <strong>Foreground Layer (Visible Text):</strong><br>
+            <div class="layer-container">
+              <span class="text-layer">S</span><span class="text-layer">e</span><span class="text-layer">c</span><span class="text-layer">r</span><span class="text-layer">e</span><span class="text-layer">t</span>
+            </div>
+            <br><small>↑ The actual text you see</small>
+          </div>
+        </div>
+
+        <div class="step">
+          <h3>Step 2: Combine All Layers</h3>
+          <div class="step-description">
+            All three layers are stacked together. Humans see the normal text, but the hidden background layer is there.
+          </div>
+          
+          <div class="layer-demo">
+            <strong>Combined View (What You See):</strong><br>
+            <div class="layer-container" style="background: white;">
+              <span class="text-layer">S</span><span class="text-layer">e</span><span class="text-layer">c</span><span class="text-layer">r</span><span class="text-layer">e</span><span class="text-layer">t</span>
+            </div>
+            <br><small>↑ Normal viewing: only text is visible</small>
+          </div>
+        </div>
+
+        <div class="step">
+          <h3>Step 3: Screenshot Protection</h3>
+          <div class="step-description">
+            When a screenshot is taken, DRM removes the middle white layer, revealing the hidden background rectangles that obscure the text.
+          </div>
+          
+          <div class="screenshot-simulation">
+            <strong>📸 Screenshot Result:</strong><br>
+            <div class="layer-container">
+              <span class="background-layer">S</span><span class="background-layer">e</span><span class="background-layer">c</span><span class="background-layer">r</span><span class="background-layer">e</span><span class="background-layer">t</span>
+            </div>
+            <br><small>↑ Only dark rectangles visible - text is protected!</small>
+          </div>
+        </div>
+
+        <div style="background: #e7f3ff; padding: 15px; border-radius: 6px; margin-top: 20px;">
+          <strong>🔒 Security Benefits:</strong>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Screenshots capture only dark rectangles</li>
+            <li>AI vision models cannot read the text</li>
+            <li>Screen recording is also protected</li>
+            <li>Perfect readability for authorized users</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Panel: Live Demo -->
+      <div class="demo-panel">
+        <h2>🚀 Live Demo</h2>
+        <div class="protection-status" id="protection-status">
+          🔄 Initializing protection...
+        </div>
+
+        <div id="content-to-protect" class="demo-content">
+          <h3>Protected Sensitive Information</h3>
+          <p>
+            This content is protected from AI vision models and screenshots using the three-layer mechanism explained on the left.
+          </p>
+          
+          <div class="sensitive-data">
+            <p>API Key: sk-1234567890abcdef</p>
+            <p>Database Password: MySecretPassword123!</p>
+            <p>JWT Secret: jwt_secret_token_here</p>
+            <p>Credit Card: 4532-1234-5678-9012</p>
+            <p>SSN: 123-45-6789</p>
+            <p>Account Number: ACC-789456123</p>
+            <p>
+              <span style="color: red;">This</span>
+              <span style="color: blue;">colorful</span>
+              <span style="color: green;">text</span>
+              <span style="color: orange;">demonstrates</span>
+              <span style="color: purple;">how</span>
+              <span style="color: brown;">protection</span>
+              <span style="color: pink;">works</span>
+              <span style="color: gray;">with</span>
+              <span style="color: navy;">multiple</span>
+              <span style="color: teal;">colors</span>
+              <span style="color: maroon;">per</span>
+              <span style="color: olive;">character.</span>
+            </p>
+          </div>
+
+          <div style="background: #f0f8ff; padding: 15px; border-radius: 4px; margin-top: 20px; border-left: 4px solid #007bff;">
+            <strong>💡 Try This:</strong>
+            <p style="margin: 5px 0;">Take a screenshot of this page to see the protection in action! The text above should appear as dark rectangles in your screenshot.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize Cloakscreen on page load
+      document.addEventListener('DOMContentLoaded', async () => {
+        const statusElement = document.getElementById('protection-status');
+        
+        if (window.Cloakscreen && window.Cloakscreen.protect) {
+          try {
+            statusElement.textContent = '🔄 Fetching configuration...';
+            
+            // Get the site configuration from the server
+            const response = await fetch('/api/token/info');
+            const config = await response.json();
+
+            statusElement.textContent = '🔄 Applying protection layers...';
+
+            await window.Cloakscreen.protect('#content-to-protect', {
+              provider: {
+                name: config.info.provider,
+                siteId: config.info.siteId,
+                tokenEndpoint: config.info.tokenEndpoint,
+              },
+            });
+
+            statusElement.textContent = '✅ Protection active - Content is now secured!';
+            statusElement.style.background = '#d4edda';
+            statusElement.style.color = '#155724';
+            statusElement.style.borderColor = '#c3e6cb';
+          } catch (error) {
+            console.error('Failed to protect content:', error);
+            statusElement.textContent = '❌ Protection failed - Content is not secured';
+            statusElement.style.background = '#f8d7da';
+            statusElement.style.color = '#721c24';
+            statusElement.style.borderColor = '#f5c6cb';
+          }
+        } else {
+          console.error('Cloakscreen library not properly loaded or protect function not available');
+          statusElement.textContent = '❌ Cloakscreen library not loaded';
+          statusElement.style.background = '#f8d7da';
+          statusElement.style.color = '#721c24';
+          statusElement.style.borderColor = '#f5c6cb';
+        }
+      });
+    </script>
+  </body>
+</html>
