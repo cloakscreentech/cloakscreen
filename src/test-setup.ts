@@ -1,9 +1,11 @@
 /**
- * Test setup file for Jest
+ * Test setup file for Vitest
  */
 
-// Mock browser globals
-global.window = {
+import { vi } from 'vitest';
+
+// Extend the existing JSDOM environment with additional mocks
+Object.assign(global.window, {
   shaka: {
     Player: {
       isBrowserSupported: () => true,
@@ -19,47 +21,28 @@ global.window = {
       },
     },
   },
-} as any;
+});
 
-global.navigator = {
-  userAgent:
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-  requestMediaKeySystemAccess: async (keySystem: string, _config: any[]) => {
-    // Mock implementation
-    if (keySystem === 'com.widevine.alpha') {
-      return {
-        keySystem,
-        createMediaKeys: async () => ({}),
-      };
-    }
-    throw new Error('Unsupported key system');
-  },
-} as any;
+// Enhance navigator with additional properties
+Object.assign(global.navigator, {
+  requestMediaKeySystemAccess: vi
+    .fn()
+    .mockImplementation(async (keySystem: string, _config: any[]) => {
+      // Mock implementation
+      if (keySystem === 'com.widevine.alpha') {
+        return {
+          keySystem,
+          createMediaKeys: async () => ({}),
+        };
+      }
+      throw new Error('Unsupported key system');
+    }),
+});
 
-global.document = {
-  createElement: (tagName: string) => {
-    if (tagName === 'video') {
-      return {
-        setAttribute: () => {},
-        style: {},
-        play: async () => {},
-      };
-    }
-    return {
-      className: '',
-      style: {},
-      appendChild: () => {},
-    };
-  },
-  querySelector: () => null,
-} as any;
-
-// Mock MediaKeys
-global.MediaKeys = class {} as any;
-global.MediaKeySystemAccess = class {} as any;
-
-// Mock Node
-global.Node = {
-  ELEMENT_NODE: 1,
-  TEXT_NODE: 3,
-} as any;
+// Mock MediaKeys (only if not already defined by JSDOM)
+if (!global.MediaKeys) {
+  global.MediaKeys = class {} as any;
+}
+if (!global.MediaKeySystemAccess) {
+  global.MediaKeySystemAccess = class {} as any;
+}

@@ -3,17 +3,18 @@
  */
 
 import { protect } from '../quick-start';
+import { vi } from 'vitest';
 
 // Mock Cloakscreen
-jest.mock('../core/Cloakscreen', () => ({
-  Cloakscreen: jest.fn(),
+vi.mock('../core/Cloakscreen', () => ({
+  Cloakscreen: vi.fn(),
 }));
 import { Cloakscreen } from '../core/Cloakscreen';
-const MockCloakscreen = Cloakscreen as jest.MockedClass<typeof Cloakscreen>;
+const MockCloakscreen = Cloakscreen as any;
 
 describe('Quick-start API', () => {
   let mockElement: HTMLElement;
-  let mockCloakscreen: jest.Mocked<Cloakscreen>;
+  let mockCloakscreen: any;
 
   beforeEach(() => {
     mockElement = document.createElement('div');
@@ -21,15 +22,15 @@ describe('Quick-start API', () => {
     document.body.appendChild(mockElement);
 
     mockCloakscreen = {
-      protect: jest.fn().mockResolvedValue(undefined),
-      unprotect: jest.fn(),
-      updateContent: jest.fn(),
-      getContent: jest.fn().mockReturnValue('test content'),
-      isProtected: jest.fn().mockReturnValue(false),
-      getDRMStatus: jest.fn(),
-      destroy: jest.fn(),
-      on: jest.fn(),
-      off: jest.fn(),
+      protect: vi.fn().mockResolvedValue(undefined),
+      unprotect: vi.fn(),
+      updateContent: vi.fn(),
+      getContent: vi.fn().mockReturnValue('test content'),
+      isProtected: vi.fn().mockReturnValue(false),
+      getDRMStatus: vi.fn(),
+      destroy: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
     } as any;
 
     MockCloakscreen.mockImplementation(() => mockCloakscreen);
@@ -37,7 +38,7 @@ describe('Quick-start API', () => {
 
   afterEach(() => {
     document.body.removeChild(mockElement);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('protect function', () => {

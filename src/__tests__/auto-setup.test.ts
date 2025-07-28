@@ -4,18 +4,20 @@
 
 import { findProtectedContent, initAutoProtection } from '../utils/auto-setup';
 
+import { vi } from 'vitest';
+
 // Mock the protect function
-jest.mock('../quick-start', () => ({
-  protect: jest.fn().mockResolvedValue({}),
+vi.mock('../quick-start', () => ({
+  protect: vi.fn().mockResolvedValue({}),
 }));
 
 import { protect } from '../quick-start';
-const mockProtect = protect as jest.MockedFunction<typeof protect>;
+const mockProtect = protect as any;
 
 describe('Auto-setup utilities', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('findProtectedContent', () => {
@@ -121,7 +123,7 @@ describe('Auto-setup utilities', () => {
         writable: true,
       });
 
-      const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
 
       initAutoProtection();
 
@@ -138,7 +140,7 @@ describe('Auto-setup utilities', () => {
         writable: true,
       });
 
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation();
 
       await initAutoProtection();
       await new Promise(resolve => setTimeout(resolve, 0));
@@ -159,7 +161,7 @@ describe('Auto-setup utilities', () => {
       });
 
       mockProtect.mockRejectedValueOnce(new Error('Protection failed'));
-      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation();
 
       await initAutoProtection();
       await new Promise(resolve => setTimeout(resolve, 0));

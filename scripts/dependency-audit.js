@@ -43,7 +43,7 @@ function analyzeDependencies() {
   // Categorize dev dependencies
   const categories = {
     build: ['rollup', '@rollup/', 'typescript', 'tslib', 'vite'],
-    testing: ['jest', '@swc/jest', '@types/jest', 'jest-environment'],
+    testing: ['vitest', '@vitest/ui', '@vitest/coverage-v8', 'jsdom'],
     linting: ['eslint', 'prettier', 'lint-staged'],
     types: ['@types/'],
     tooling: ['husky', 'concurrently', 'tsx', 'typedoc'],
@@ -149,7 +149,7 @@ function generateOptimizationPlan() {
     },
     {
       action: 'Remove unused test dependencies',
-      description: 'Remove @swc/jest, @types/jest, jest-environment-jsdom if not used',
+      description: 'Remove vitest, @vitest/ui, @vitest/coverage-v8, jsdom if not used',
       priority: 'MEDIUM',
       impact: 'Reduces dev dependency count',
     },

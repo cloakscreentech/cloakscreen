@@ -12,6 +12,7 @@ import {
 } from '../version';
 
 import { deprecate, clearDeprecationWarnings } from '../utils/deprecation';
+import { vi } from 'vitest';
 
 describe('Version Management', () => {
   test('should export version constants', () => {
@@ -52,7 +53,7 @@ describe('Simple Deprecation System', () => {
   });
 
   test('should show deprecation warnings', () => {
-    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
 
     deprecate('oldMethod()', 'newMethod()');
 
@@ -64,7 +65,7 @@ describe('Simple Deprecation System', () => {
   });
 
   test('should only show deprecation warning once', () => {
-    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
 
     deprecate('oldMethod()', 'newMethod()');
     deprecate('oldMethod()', 'newMethod()'); // Should not show again
